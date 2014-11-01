@@ -19,7 +19,7 @@ public class TestRecommendationEngine {
 		
 		//d.createUserRatings();
 		RecommendationEngine r = new RecommendationEngine();
-		r.showTopRecommendations(3);
+		r.showTopRecommendations();
 
 		
 	}

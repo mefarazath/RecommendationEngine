@@ -129,7 +129,7 @@ public class DataHandler {
     	        count++;
 	        }
 	        
-	        System.out.println(count+"  "+ratings.size());
+	      //  System.out.println(count+"  "+ratings.size());
         } catch (FileNotFoundException e) {
 	        System.err.println("File Not Found");
 	        e.printStackTrace();

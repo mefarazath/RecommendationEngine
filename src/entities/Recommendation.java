@@ -4,16 +4,16 @@ import java.util.Comparator;
 
 public class Recommendation {
 		
-	private int name;
+	private int recId;
 	private double cValue;
 	
 	public Recommendation(int name, double cValue) {
-	    this.name = name;
+	    this.recId = name;
 	    this.cValue = cValue;
     }
 
-	public int getName() {
-		return name;
+	public int getRecId() {
+		return recId;
 	}
 
 	public double getcValue() {

@@ -1,11 +1,13 @@
 package engine;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Properties;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
 
 import dataHandler.DataHandler;
 
@@ -17,6 +19,12 @@ import entities.RecommendationComparator;
 
 
 public class RecommendationEngine {
+	
+	//minimum corrating required
+	private int minimumCoratings;
+	//number of top ratings required
+	private int topN;
+	
 	
 	// hash map to store the ratings based on user
 	private HashMap<Integer,ArrayList<Rating>> userRatings;
@@ -32,7 +40,23 @@ public class RecommendationEngine {
 			userRatings = handler.getUserRatings();
 			coratings = new HashMap<>();
 			rec = new HashMap<>();
+			initialize();
 	}
+	
+	
+	public void initialize(){
+			Properties prop = new Properties();
+			
+			try {
+	            prop.load(new FileInputStream("settings.properties"));
+	            minimumCoratings = Integer.parseInt(prop.getProperty("minimumCoratings","50").toString());
+	            topN = Integer.parseInt(prop.getProperty("topN","3").toString());
+	            
+            } catch (IOException e) {
+	            e.printStackTrace();
+            }
+	}
+	
 	//for each user	create pairs of corrated movies and accumilate data required
 	// for calculating the correlation coefficient of the moview pair
 	public void buildCoratings(){
@@ -86,19 +110,13 @@ public class RecommendationEngine {
                         }
 	                
                 }
-						
-				
-//						for(String key:coratings.keySet()){
-//								if(coratings.get(key).getNumberOfCorratings()>=75)
-//								System.out.println(key+" : "+coratings.get(key).getNumberOfCorratings());
-//						}
 				
 			}
 			
 	}
 	
 	//build the recommendations
-	public void buildRecommendations(int minimumCoratings){
+	public void buildRecommendations(){
 		
 		// build the corating
 		this.buildCoratings();
@@ -146,14 +164,17 @@ public class RecommendationEngine {
 	}
 	
 	//method to show n recommendations for each entity
-	public void showTopRecommendations(int topN){
+	public void showTopRecommendations(){
 				//build the recommendation dictionary
-				this.buildRecommendations(50);
+				this.buildRecommendations();
+				
+				//get the dictionary to get names from Ids for recommendations
+				HashMap<Integer,String> dict = this.handler.getMappingDictionary();
 		
 				//iterate for each entity
 				for(int id: rec.keySet())
 				{
-					String name = this.handler.getMappingDictionary().get(id);
+					String name = dict.get(id);
 					ArrayList<Recommendation> listOfRec =rec.get(id);
 					//sort recommendations based on the cValue
 					Collections.sort(listOfRec,new RecommendationComparator());
@@ -163,12 +184,14 @@ public class RecommendationEngine {
 							if(i==topN)
 								break;
 							Recommendation r = listOfRec.get(i);
-							System.out.println(r.getName()+" "+r.getcValue());
+							String recName = dict.get(r.getRecId());
+							System.out.println(r.getRecId()+" "+recName+" "+r.getcValue());
                     }
 					System.out.println();
 				}
 		
 	}
+	
 	//method to show n recommendations for a specific entity
 	public ArrayList<Recommendation> showRecommendations(String name,int topN){
 				return null;
