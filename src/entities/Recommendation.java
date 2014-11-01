@@ -1,6 +1,5 @@
 package entities;
 
-import java.util.Comparator;
 
 public class Recommendation {
 		
@@ -20,6 +19,10 @@ public class Recommendation {
 		return cValue;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+	    return this.recId == ((Recommendation)obj).getRecId();
+	}
 }
 
 

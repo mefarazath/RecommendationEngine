@@ -1,7 +1,6 @@
 package engine;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,12 +54,14 @@ public class RecommendationEngine {
             } catch (IOException e) {
 	            e.printStackTrace();
             }
+			
+			this.buildRecommendations();
 	}
 	
-	//for each user	create pairs of corrated movies and accumilate data required
-	// for calculating the correlation coefficient of the moview pair
+	//for each user	create pairs of corrated movies and accumulate data required
+	// for calculating the correlation coefficient of the movie pair
 	public void buildCoratings(){
-			
+		
 			//iterate for each user
 			for(int userId : userRatings.keySet()){
 				//get the ratings of the user
@@ -105,7 +106,7 @@ public class RecommendationEngine {
 								entityPair.setRatingSquareSum2(squareSum2);
 								entityPair.setDotProduct(dotProductSum);
 								
-								coratings.put(entityPair.toString(),entityPair);
+								coratings.put(key,entityPair);
 	                        
                         }
 	                
@@ -151,9 +152,20 @@ public class RecommendationEngine {
 					temp2 = rec.get(entity2);
 				}
 				
+				// create the recommendations to be added
+				Recommendation r1 = new Recommendation(entity2, cValue);
+				Recommendation r2 = new Recommendation(entity1, cValue);
+				
+				//check whether the recommendation is already included
+				if(temp1.contains(r1)){
+					temp1.remove(r1);
+				}
+				if(temp2.contains(r2)){
+					temp2.remove(r2);
+				}
 				//add the recommendations to the recommendation lists of each entity
-				temp1.add(new Recommendation(entity2, cValue));
-				temp2.add(new Recommendation(entity1, cValue));
+				temp1.add(r1);
+				temp2.add(r2);
 				
 				//add the entities to the recommendation map {entity -> recommendation} 
 				rec.put(entity1,temp1);
@@ -165,8 +177,6 @@ public class RecommendationEngine {
 	
 	//method to show n recommendations for each entity
 	public void showTopRecommendations(){
-				//build the recommendation dictionary
-				this.buildRecommendations();
 				
 				//get the dictionary to get names from Ids for recommendations
 				HashMap<Integer,String> dict = this.handler.getMappingDictionary();
@@ -185,15 +195,31 @@ public class RecommendationEngine {
 								break;
 							Recommendation r = listOfRec.get(i);
 							String recName = dict.get(r.getRecId());
-							System.out.println(r.getRecId()+" "+recName+" "+r.getcValue());
+							System.out.println((i+1)+". "+recName+" ["+r.getRecId()+"] "+r.getcValue());
                     }
 					System.out.println();
 				}
-		
+				//	System.out.println(rec.size());
 	}
 	
 	//method to show n recommendations for a specific entity
-	public ArrayList<Recommendation> showRecommendations(String name,int topN){
+	public ArrayList<Recommendation> showRecommendations(String name){
+				
+				int id = this.handler.getReverseMappingDictionary().get(name);
+				HashMap<Integer,String> dict = this.handler.getMappingDictionary();
+				
+				ArrayList<Recommendation> listOfRec = rec.get(id);
+				
+				System.out.println("Top "+topN+" Recommendations for "+name);
+				for (int i = 0; i < listOfRec.size(); i++) {
+					if(i==topN)
+						break;
+					Recommendation r = listOfRec.get(i);
+					String recName = dict.get(r.getRecId());
+					System.out.println((i+1)+". "+recName+" ["+r.getRecId()+"] "+r.getcValue());
+				}
+				System.out.println();
+				
 				return null;
 	}
 	

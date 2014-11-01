@@ -23,6 +23,8 @@ public class DataHandler {
 	
 	//hashmap for mapping id to name
 	private HashMap<Integer, String> map;
+	//hashmap for reverse mapping
+	private HashMap<String,Integer> rmap;
 	//list to store the user ratings
 	private ArrayList<Rating> ratings;
 	//map to store the ratings based on the user 
@@ -31,6 +33,7 @@ public class DataHandler {
 	public DataHandler(){
 		initialize();
 		map = new HashMap<Integer,String>();
+		rmap = new HashMap<>();
 		ratings = new ArrayList<Rating>();
 		userRatings = new HashMap<>();
 	}
@@ -84,7 +87,8 @@ public class DataHandler {
     	        
     	        //put the mapping into the dictionary
     	        map.put(key, value);
-    	    
+    	        rmap.put(value,key);
+
     	        line = br.readLine();
 	        }
 	        
@@ -102,6 +106,13 @@ public class DataHandler {
 		this.createMappingDictionary();
 		
 		return map;
+	}
+	
+	public HashMap<String,Integer> getReverseMappingDictionary(){
+		//create the mapping dictionary
+		this.createMappingDictionary();
+		
+		return rmap;
 	}
 	
 	//method to add the ratings to a list 
