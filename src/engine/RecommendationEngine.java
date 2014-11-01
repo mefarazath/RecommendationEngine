@@ -189,7 +189,7 @@ public class RecommendationEngine {
 					//sort recommendations based on the cValue
 					Collections.sort(listOfRec,new RecommendationComparator());
 					//sublist based on value of topN
-					System.out.println("Top "+topN+" Recommendations for "+name+" :");
+					System.out.println("Top "+topN+" Recommendations for "+name+" ["+id+"] :");
 					for (int i = 0; i < listOfRec.size(); i++) {
 							if(i==topN)
 								break;
@@ -210,7 +210,7 @@ public class RecommendationEngine {
 				
 				ArrayList<Recommendation> listOfRec = rec.get(id);
 				
-				System.out.println("Top "+topN+" Recommendations for "+name);
+				System.out.println("Top "+topN+" Recommendations for "+name+" ["+id+"] :");
 				for (int i = 0; i < listOfRec.size(); i++) {
 					if(i==topN)
 						break;
